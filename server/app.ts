@@ -1,7 +1,6 @@
 import express, { Application } from "express";
 import cors from "cors";
 import userRoutes from "./routes/user.routes.js";
-// todo: import test route
 
 const app: Application = express();
 

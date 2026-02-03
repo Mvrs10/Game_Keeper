@@ -10,7 +10,7 @@ href="https://fonts.googleapis.com/css?family=Roboto:100,300,400">
 rel="stylesheet">
     </head>
     <body>
-    <div style="font-size: 24px; color: green; margin-top: 1rem;">Game Store Server is Running</div>
+    <div style="font-size: 24px; color: green; margin-top: 1rem;">Game Keeper Server is Running</div>
     </body>
     </html>`;
 }

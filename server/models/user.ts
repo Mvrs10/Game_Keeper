@@ -1,6 +1,6 @@
 import {Schema, model, Types } from "mongoose"
 
-interface IUser {
+export interface IUser {
     username: string,
     password: string,
     games: Types.ObjectId[]
@@ -15,6 +15,4 @@ const userSchema = new Schema<IUser>(
     {timestamps: true}
 );
 
-const User = model<IUser>("User", userSchema);
-
-export default User;
+export const User = model<IUser>("User", userSchema);
