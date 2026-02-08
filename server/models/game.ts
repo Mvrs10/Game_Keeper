@@ -7,7 +7,8 @@ export interface IGame {
     releaseYear: number,
     developer: string,
     rating: number,
-    description: string
+    description: string,
+    image: string
 }
 
 const gameSchema = new Schema<IGame> (
@@ -19,6 +20,7 @@ const gameSchema = new Schema<IGame> (
         developer: {type: String, required: true, trim: true},
         rating: {type: Number, required: true, trim: true, default: 5},
         description: {type: String, required: true, trim: true, default: "Description is not available."},
+        image: {type: String, required: true, default: "0"}
     },
     { timestamps: true }
 );
