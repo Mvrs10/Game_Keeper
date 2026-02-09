@@ -71,4 +71,31 @@ const deleteUser = async (req: Request, res: Response) => {
     }
 }
 
-export default { createUser, getUsers, getUserById, getUsername, getUserGamesById, deleteUser }
+const addGameToCollection = async (req: Request, res: Response) => {
+    try {
+        const { userId, gameId } = req.params;
+        const game = await service.addGameToCollection(userId as string, gameId as string);
+        res.status(200).json({ message: "Game added to user collection", game: game });
+    } catch (err) {
+        if (err instanceof AppError) {
+            return res.status(err.statusCode).json({ error: err.message });
+        }
+        res.status(500).json({ error: "Unexpected server error" });
+    }
+};
+
+
+const removeGameFromCollection = async (req: Request, res: Response) => {
+    try {
+        const { userId, gameId } = req.params;
+        const game = await service.removeGameFromCollection(userId as string, gameId as string);
+        res.status(200).json({ message: "Game removed from user collection", game: game });
+    } catch (err) {
+        if (err instanceof AppError) {
+            return res.status(err.statusCode).json({ error: err.message });
+        }
+        res.status(500).json({ error: "Unexpected server error" });
+    }
+};
+
+export default { createUser, getUsers, getUserById, getUsername, getUserGamesById, deleteUser, addGameToCollection, removeGameFromCollection }

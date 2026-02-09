@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 
 import userRoutes from "./routes/user.routes.js";
 import authRoutes from "./routes/auth.routes.js";
+import gameRoutes from "./routes/game.route.js";
 import "./models/user.js";
 import "./models/game.js";
 
@@ -21,5 +22,6 @@ app.use(express.json());
 
 app.use("/api/users/", userRoutes);
 app.use("/api/auth/", authRoutes);
+app.use("/api/games/", gameRoutes);
 
 export default app;
