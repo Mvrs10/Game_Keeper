@@ -15,12 +15,21 @@ const createUser = async (req: Request, res: Response) => {
     }
 }
 
-const userById = async (req: Request, res: Response, next: NextFunction, id: string) => {
+const getUsers = async (req: Request, res: Response) => {
+    try {
+        const users = await service.getUsers();
+        return res.status(200).json(users);
+    } catch (err) {
+        return res.status(500).json({error: "Unexpected server error"})
+    }
+}
+
+const getUserById = async (req: Request, res: Response, next: NextFunction, id: string) => {
     try {
         const user = await service.getUserById(id);
         if (!user) return res.status(404).json({ message: "User not found" });
 
-        req.user = user;
+        req.user = { _id: id, username: user.username };
         next();
     } catch (err) {
         return res.status(400).json({ message: "Invalid user id" })
@@ -58,8 +67,8 @@ const deleteUser = async (req: Request, res: Response) => {
         if (err instanceof AppError){
             return res.status(err.statusCode).json({error: err.message});
         }
-        return res.status(500).json({ err: "Unexpected server error" });
+        return res.status(500).json({ error: "Unexpected server error" });
     }
 }
 
-export default { createUser, userById, getUsername, getUserGamesById, deleteUser }
+export default { createUser, getUsers, getUserById, getUsername, getUserGamesById, deleteUser }

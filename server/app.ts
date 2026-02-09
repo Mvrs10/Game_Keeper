@@ -1,14 +1,25 @@
 import express, { Application } from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+
 import userRoutes from "./routes/user.routes.js";
+import authRoutes from "./routes/auth.routes.js";
 import "./models/user.js";
 import "./models/game.js";
 
 const app: Application = express();
 
-app.use(cors());
+app.use(cors({
+    origin: ["http://localhost:5000"],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    exposedHeaders: ['Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.use(cookieParser());
 app.use(express.json());
 
 app.use("/api/users/", userRoutes);
+app.use("/api/auth/", authRoutes);
 
 export default app;

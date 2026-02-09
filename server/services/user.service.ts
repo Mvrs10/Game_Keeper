@@ -25,6 +25,12 @@ const createUser = async (payload: UserDTO): Promise<Types.ObjectId> => {
     }
 }
 
+const getUsers = async(): Promise<Partial<IUser[]>> => {
+    const users = await User.find().select("_id username games").lean().exec();
+    
+    return users;
+}
+
 const getUserById = async (userId: string): Promise<IUser | null> => {
     const user = await User.findById(userId).lean<IUser>().exec();
 
@@ -56,4 +62,4 @@ const getUserGamesById = async (userId: string): Promise<IGame[]> => {
     return user.games;
 }
 
-export default { getUserById, createUser, deleteUser, getUserGamesById }
+export default { getUserById, createUser, getUsers, deleteUser, getUserGamesById }
