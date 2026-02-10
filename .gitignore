@@ -1,4 +1,6 @@
 COMP308W26 Lab Assignment 1.docx
+node_modules
 server/node_modules
+client/node_modules
 .env
 .env.*
