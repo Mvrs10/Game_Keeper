@@ -8,6 +8,8 @@ import axios from "axios";
 import GamesList from "./GamesList";
 import Sphere from "./Sphere";
 import SnackBar from "./SnackBar";
+import NavButton from "./NavButton";
+import UserLabel from "./UserLabel";
 
 import type IGame from "../types/Game";
 
@@ -69,7 +71,9 @@ const OpenBookModel = () => {
     return (
         <group position={[xOffset,0,0]}>
             <primitive object={scene} />
+            <UserLabel />
             <GamesList games={games} setSelectedGame={setSelectedGame}/>
+            <NavButton />
             <Sphere game={selectedGame}/>
             <SnackBar setIsExiting={setIsExiting}/>
         </group>

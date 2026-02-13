@@ -195,6 +195,32 @@ canvas {
   font-size: 12px;
 }
 
+.nav-btn-container {
+    display: flex;
+    align-items: center;
+    transform: translateX(10%); 
+}
+
+.nav-btn {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-weight: normal;
+    font-size: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    padding: 2px 5px;
+    outline: none;
+}
+
+.nav-btn:hover {
+    transform: scale(1.1);
+}
+
+.username-label {
+  color: white;
+}
+
 /* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
