@@ -1,12 +1,14 @@
 import { Html } from "@react-three/drei";
+import type { Dispatch, SetStateAction } from "react";
 
-import { useNavigate } from "react-router-dom";
+interface ISnackBar {
+    setIsExiting: Dispatch<SetStateAction<boolean>>
+}
 
-const SnackBar = () => {
-    const navigate = useNavigate();
+const SnackBar: React.FC<ISnackBar> = ({setIsExiting}) => {
 
     const returnHome = () => {
-        navigate("/");
+        setIsExiting(true);
     }
 
     return (
@@ -18,7 +20,6 @@ const SnackBar = () => {
                     rotation-x={-Math.PI / 2}
                 >
                     <div className="snack-bar">
-                        {/* todo: Implement navigation Link */}
                         <button className="btn-home" onClick={returnHome}>
                             <img src="./home.png" alt="home" />
                         </button>

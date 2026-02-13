@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-const GlowingGem = new THREE.ShaderMaterial({
+const GlowingGold = new THREE.ShaderMaterial({
   uniforms: {
     uTime: { value: 0 },
     uColor: { value: new THREE.Color("#FFD54F") },
@@ -53,4 +53,4 @@ const GlowingGem = new THREE.ShaderMaterial({
   `,
 });
 
-export default GlowingGem;
+export default GlowingGold;

@@ -1,46 +1,80 @@
 import { Html } from "@react-three/drei";
 
-import React, { useState, type Dispatch, type SetStateAction } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useContext, useState, type Dispatch, type SetStateAction } from "react";
 
 import axios from "axios";
 
+import { AuthorizationContext, type AuthorizationContextType } from "../context/AuthorizationContext";
+
 interface ILoginForm {
     setIsFormOpen: React.Dispatch<React.SetStateAction<boolean>>,
-    setGlowGem: React.Dispatch<React.SetStateAction<boolean>>,
-    setIsFailed: Dispatch<SetStateAction<boolean>>
+    setGlowGem: React.Dispatch<React.SetStateAction<string>>,
+    setIsFailed: Dispatch<SetStateAction<boolean>>,
+    setIsExiting: Dispatch<SetStateAction<boolean>>
 }
 
-const LoginForm: React.FC<ILoginForm> = ({ setIsFormOpen, setGlowGem, setIsFailed }) => {
+const LoginForm: React.FC<ILoginForm> = ({ setIsFormOpen, setGlowGem, setIsFailed, setIsExiting }) => {
+    const { setIsAuthorized }: AuthorizationContextType = useContext(AuthorizationContext);
+
     const handleFormClose = () => {
         setIsFormOpen(false);
-        setGlowGem(false);
+        setGlowGem("");
         setIsFailed(false);
+        setIsExiting(true);
     }
 
     const [username, setUserName] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-    const navigate = useNavigate();
+    const [mode, setMode] = useState<string>("login");
 
-    const handleSubmit = async (e: React.SubmitEvent) => {
+    const switchMode = () => {
+        if (mode === "login") setMode("register");
+        else setMode("login")
+    }
+    const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        const submitter = (e.nativeEvent).submitter as HTMLButtonElement;
+        const action = submitter?.value;
+        console.log(action);
         try {
-            const response = await axios.post("api/auth/login", { username, password });
-            if (response.status === 200){
-                handleFormClose();
-                navigate("/game-keeper");
+            switch (action) {
+                case "login":
+                    const loginRes = await axios.post("api/auth/login", { username, password });
+                    if (loginRes.status === 200) {
+                        setIsAuthorized(true);
+                        handleFormClose();
+                    }
+                    else {
+                        setIsFailed(true);
+                    }
+                    break;
+                case "register":
+                    let regRes = await axios.post("api/users/", { username, password });
+                    if (regRes.status === 201) {
+                        console.log(regRes.data);
+                        setGlowGem("HealthyGreen");
+                        await new Promise(_r => setTimeout(_r, 5000));
+                        regRes = await axios.post("api/auth/login", { username, password });
+                        if (regRes.status === 200) {
+                            setIsAuthorized(true);
+                            handleFormClose();
+                        }
+                    }
+                    else {
+                        setIsFailed(true);
+                    }
+                    break;
+                default:
+                    break;
+
             }
-            else {
-                setIsFailed(true);
-            }
-            
-        } catch (err){
+        } catch (err) {
             setIsFailed(true);
             console.log(err);
         }
     }
-    
+
     return (
         <Html
             transform
@@ -53,11 +87,14 @@ const LoginForm: React.FC<ILoginForm> = ({ setIsFormOpen, setGlowGem, setIsFaile
                 <div className="login-form-control">
                     <label>Username</label>
                     <button type="button" className="btn-close-form btn-login" onClick={() => handleFormClose()}>X</button>
-                </div>                
-                <input type="text" value={username} onChange={e => setUserName(e.target.value)} required/>
+                </div>
+                <input type="text" value={username} onChange={e => setUserName(e.target.value)} required />
                 <label>Password</label>
-                <input type="password" value={password} onChange={e => setPassword(e.target.value)} required/>
-                <button type="submit" className="btn-login">Let's go</button>
+                <input type="password" value={password} onChange={e => setPassword(e.target.value)} required />
+                {mode === "login" ? <><button type="submit" name="action" value="login" className="btn-login">Let's go</button>
+                    <button type="button" className="btn-login" onClick={switchMode}>Wait! I need an account</button> </>
+                    : <button type="submit" name="action" value="register" className="btn-login">Create an account</button>}
+
             </form>
         </Html>
     )

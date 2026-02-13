@@ -16,7 +16,6 @@ const Content = () => {
                 </Suspense>
                 <CameraController />
             </Canvas>
-
         </div>
     )
 }

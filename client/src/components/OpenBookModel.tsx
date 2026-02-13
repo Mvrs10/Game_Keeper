@@ -2,6 +2,7 @@ import { useGLTF } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import GamesList from "./GamesList";
@@ -27,12 +28,20 @@ const OpenBookModel = () => {
 
     const { camera } = useThree();
 
+    const navigate = useNavigate();
+
     const [zPos, setZPos] = useState<number>(6);
+    const [xOffset, setXOffset] = useState<number>(0);
+    const [isExiting, setIsExiting] = useState<boolean>(false);
 
     useFrame((_state, delta) => {
         if (zPos > 0.1) {
             setZPos(zPos - delta * 1);
             camera.position.setZ(zPos);
+        }
+
+        if (isExiting) {
+            setXOffset(prev => prev - delta * 10);
         }
     })
 
@@ -53,13 +62,17 @@ const OpenBookModel = () => {
         fetchGames();
     },[]);
 
+    useEffect(() => {
+        if (xOffset < -10) navigate("/");
+    }, [xOffset]);
+
     return (
-        <>
+        <group position={[xOffset,0,0]}>
             <primitive object={scene} />
             <GamesList games={games} setSelectedGame={setSelectedGame}/>
             <Sphere game={selectedGame}/>
-            <SnackBar />
-        </>
+            <SnackBar setIsExiting={setIsExiting}/>
+        </group>
     )
 }
 
