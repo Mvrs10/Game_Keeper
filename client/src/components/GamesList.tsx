@@ -1,7 +1,7 @@
 import { Html } from '@react-three/drei';
 
 import type IGame from '../types/Game';
-import { useState, type Dispatch, type SetStateAction } from 'react';
+import { useState, useEffect, type Dispatch, type SetStateAction } from 'react';
 
 import GameItem from './GameItem';
 
@@ -23,6 +23,10 @@ const GamesList: React.FC<IGameList> = ({ games, setSelectedGame, isAuthorized, 
   const displayedGames: IGame[] = games.slice(left, right);
   const totalPages: number = Math.ceil(games.length / itemsPerPage);
 
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [games]);
+
   return (
     <Html
       transform
@@ -31,7 +35,11 @@ const GamesList: React.FC<IGameList> = ({ games, setSelectedGame, isAuthorized, 
       rotation-x={-Math.PI / 2}
     >
       <div className="game-list">
-        {displayedGames.map((game, i) => (
+        {displayedGames.length === 0 ?
+          <div key={9999} className="game-list-item">
+            <img src={`/images/0.webp`} className="game-list-img" alt="icon" />
+          </div>
+        :displayedGames.map((game, i) => (
           <GameItem key={game._id} i={i} game={game} setSelectedGame={setSelectedGame} isAuthorized={isAuthorized} userId={userId} favoriteGames={favoriteGames} setFavoriteGames={setFavoriteGames} />
         ))}
       </div>

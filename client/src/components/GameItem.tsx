@@ -1,4 +1,4 @@
-import { type Dispatch, type SetStateAction, useState } from 'react';
+import { type Dispatch, type SetStateAction } from 'react';
 import axios from 'axios';
 
 import type IGame from '../types/Game';
@@ -62,7 +62,7 @@ const GameItem: React.FC<IGameItem> = ({ i, game, setSelectedGame, isAuthorized,
         }
         await refreshGameCollection();
     }
-    
+
     return (
         <div key={i} className="game-list-item" onClick={() => handleGameSelected(game)}>
             <img src={`/images/${game.image}.webp`} className="game-list-img" alt="icon" />
