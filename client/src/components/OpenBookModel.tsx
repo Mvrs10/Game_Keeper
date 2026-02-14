@@ -1,5 +1,6 @@
 import { useGLTF } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
+import * as THREE from "three";
 
 import { useState, useEffect, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
@@ -36,7 +37,7 @@ const OpenBookModel = () => {
     const { isAuthorized, userName, userId }: AuthorizationContextType = useContext(AuthorizationContext);
 
     const zPos = useRef<number>(6);
-    const [xOffset, setXOffset] = useState<number>(0);
+    const posRef = useRef<THREE.Group>(null);
     const [isExiting, setIsExiting] = useState<boolean>(false);
 
     useFrame((_state, delta) => {
@@ -45,14 +46,39 @@ const OpenBookModel = () => {
             camera.position.setZ(zPos.current);
         }
 
-        if (isExiting) {
-            setXOffset(prev => prev - delta * 10);
+        if (isExiting && posRef.current) {
+            posRef.current.position.x -= delta * 10;
+            if (posRef.current.position.x < -10) {
+                navigate("/");
+            }
         }
     })
 
     const [games, setGames] = useState<IGame[]>([]);
+    const [favoriteGames, setFavoriteGames] = useState<IGame[]>([]);
+    const [isCollectionOpen, setIsCollectionOpen] = useState<boolean>(false);
 
     const [selectedGame, setSelectedGame] = useState<IGame>(initGameState);
+
+    const getAllGames = async () => {
+        try {
+            const response = await axios.get<IGame[]>('/api/games');
+            setGames(response.data);
+        } catch (error) {
+            console.error("Error fetching games:", error);
+        }
+    };
+
+    const getCollection = async (isClicked: boolean = false) => {
+        try {
+            if (userId === "") return;
+            const response = await axios.get<IGame[]>(`/api/users/${userId}/games`);
+            setFavoriteGames(response.data); //TODO: improve spaghetti logic.
+            if (isClicked || isCollectionOpen) setGames(response.data);
+        } catch (err) {
+            console.log("Error fetching collection:", err)
+        }
+    }
 
     const searchGames = async (query: string) => {
         try {
@@ -71,28 +97,16 @@ const OpenBookModel = () => {
     };
 
     useEffect(() => {
-        const fetchGames = async () => {
-            try {
-                const response = await axios.get<IGame[]>('/api/games');
-                setGames(response.data);
-            } catch (error) {
-                console.error("Error fetching games:", error);
-            }
-        };
-
-        fetchGames();
+        getCollection();
+        getAllGames();        
     }, []);
 
-    useEffect(() => {
-        if (xOffset < -10) navigate("/");
-    }, [xOffset]);
-
     return (
-        <group position={[xOffset, 0, 0]}>
+        <group ref={posRef}>
             <primitive object={scene} />
             <UserLabel username={userName}/>
-            {isAuthorized ? <NavButton setGames={setGames} userId={userId} /> : null}
-            <GamesList games={games} setSelectedGame={setSelectedGame} isAuthorized={isAuthorized} />
+            {isAuthorized ? <NavButton getAllGames={getAllGames} getCollection={getCollection} setIsCollectionOpen={setIsCollectionOpen}/> : null}
+            <GamesList games={games} setSelectedGame={setSelectedGame} isAuthorized={isAuthorized} userId={userId} favoriteGames={favoriteGames} setFavoriteGames={setFavoriteGames}/>
             <Sphere game={selectedGame} />
             <SnackBar setIsExiting={setIsExiting} onSearch={searchGames} />
         </group>

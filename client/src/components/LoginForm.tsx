@@ -17,10 +17,14 @@ interface ILoginForm {
 const LoginForm: React.FC<ILoginForm> = ({ setIsFormOpen, setGlowGem, setIsFailed, setIsExiting }) => {
     const { setIsAuthorized, setUsername, setUserId }: AuthorizationContextType = useContext(AuthorizationContext);
 
-    const handleFormClose = () => {
+    const deactivateForm = () => {
         setIsFormOpen(false);
         setGlowGem("");
         setIsFailed(false);
+    }
+
+    const handleFormClose = () => {
+        deactivateForm();
         setIsExiting(true);
     }
 
@@ -91,7 +95,7 @@ const LoginForm: React.FC<ILoginForm> = ({ setIsFormOpen, setGlowGem, setIsFaile
             <form className="login-form" onSubmit={handleSubmit}>
                 <div className="login-form-control">
                     <label>Username</label>
-                    <button type="button" className="btn-close-form btn-login" onClick={() => handleFormClose()}>X</button>
+                    <button type="button" className="btn-close-form btn-login" onClick={deactivateForm}>X</button>
                 </div>
                 <input type="text" value={username} onChange={e => setUserName(e.target.value)} required />
                 <label>Password</label>

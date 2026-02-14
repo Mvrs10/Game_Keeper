@@ -1,39 +1,28 @@
 import { Html } from '@react-three/drei';
+import { type Dispatch, type SetStateAction } from 'react';
 import * as THREE from 'three';
 
-import type IGame from '../types/Game';
-import type { Dispatch, SetStateAction } from 'react';
-import axios from 'axios';
-
 interface INavButton {
-    setGames: Dispatch<SetStateAction<IGame[]>>,
-    userId: string
+    getAllGames: () => Promise<void>,
+    getCollection: (isClicked: boolean) => Promise<void>,
+    setIsCollectionOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const NavButton: React.FC<INavButton> = ({setGames, userId}) => {
+const NavButton: React.FC<INavButton> = ({getAllGames, getCollection, setIsCollectionOpen}) => {
 
-    const getAllGames = async () => {
-        try {
-            const response = await axios.get<IGame[]>('/api/games');
-            setGames(response.data);
-        } catch (error) {
-            console.error("Error fetching games:", error);
-        }
-    };
-
-    const getCollection = async () => {
-        try {
-            if (userId === "") return;
-            const response = await axios.get<IGame[]>(`/api/users/${userId}/games`);
-            setGames(response.data);
-        } catch (err) {
-            console.log("Error fetching collection:", err)
-        }
+    const viewAll = async () => {
+        setIsCollectionOpen(false);
+        getAllGames();
     }
 
-        const buttons: { label: string, pos: [number, number, number], action: () => Promise<void> }[] = [
-        { label: "All Games", pos: [-2.5, 0.02, -0.3], action: getAllGames },
-        { label: "My Collection", pos: [-2.5, 0.02, 0.4], action: getCollection }
+    const viewCollection = async () => {
+        setIsCollectionOpen(true);
+        getCollection(true);
+    }
+
+    const buttons: { label: string, pos: [number, number, number], action: () => Promise<void> }[] = [
+        { label: "All Games", pos: [-2.5, 0.02, -0.3], action: viewAll },
+        { label: "My Collection", pos: [-2.5, 0.02, 0.4], action: viewCollection }
     ];
 
     return (
