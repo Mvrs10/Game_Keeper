@@ -3,6 +3,7 @@ import { Html } from "@react-three/drei";
 import React, { useContext, useState, type Dispatch, type SetStateAction } from "react";
 
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 import { AuthorizationContext, type AuthorizationContextType } from "../context/AuthorizationContext";
 
@@ -14,7 +15,7 @@ interface ILoginForm {
 }
 
 const LoginForm: React.FC<ILoginForm> = ({ setIsFormOpen, setGlowGem, setIsFailed, setIsExiting }) => {
-    const { setIsAuthorized }: AuthorizationContextType = useContext(AuthorizationContext);
+    const { setIsAuthorized, setUsername, setUserId }: AuthorizationContextType = useContext(AuthorizationContext);
 
     const handleFormClose = () => {
         setIsFormOpen(false);
@@ -40,8 +41,12 @@ const LoginForm: React.FC<ILoginForm> = ({ setIsFormOpen, setGlowGem, setIsFaile
         try {
             switch (action) {
                 case "login":
-                    const loginRes = await axios.post("api/auth/login", { username, password });
+                    const loginRes = await axios.post("/api/auth/login", { username, password });
                     if (loginRes.status === 200) {
+                        const token = loginRes.data.token;
+                        const decoded = jwtDecode<{ _id: string, username: string }>(token);
+                        setUsername(decoded.username);
+                        setUserId(decoded._id);
                         setIsAuthorized(true);
                         handleFormClose();
                     }
@@ -50,12 +55,12 @@ const LoginForm: React.FC<ILoginForm> = ({ setIsFormOpen, setGlowGem, setIsFaile
                     }
                     break;
                 case "register":
-                    let regRes = await axios.post("api/users/", { username, password });
+                    let regRes = await axios.post("/api/users/", { username, password });
                     if (regRes.status === 201) {
                         console.log(regRes.data);
                         setGlowGem("HealthyGreen");
                         await new Promise(_r => setTimeout(_r, 5000));
-                        regRes = await axios.post("api/auth/login", { username, password });
+                        regRes = await axios.post("/api/auth/login", { username, password });
                         if (regRes.status === 200) {
                             setIsAuthorized(true);
                             handleFormClose();

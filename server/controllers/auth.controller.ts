@@ -6,7 +6,7 @@ const login = async (req: Request, res: Response) => {
     try {
         const { username, password } = req.body;
         const token = await service.login(username, password);
-        res.cookie('t', token, { expires: new Date(2036) });
+        res.cookie('t', token, { expires: new Date(2036,0,1) });
         res.status(200).json({ token });
     } catch (err) {
         if (err instanceof AppError) {

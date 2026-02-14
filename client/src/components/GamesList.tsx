@@ -3,17 +3,16 @@ import { Html } from '@react-three/drei';
 import type IGame from '../types/Game';
 import type { Dispatch, SetStateAction } from 'react';
 
+import GameItem from './GameItem';
+
 interface IGameList {
   games: IGame[],
-  setSelectedGame: Dispatch<SetStateAction<IGame>>
+  setSelectedGame: Dispatch<SetStateAction<IGame>>,
+  isAuthorized: boolean;
 }
 
-const GamesList: React.FC<IGameList> = ({ games, setSelectedGame }) => {
-  
-  const handleGameSelected = (game: IGame) => {
-    setSelectedGame(game);
-  }
-  
+const GamesList: React.FC<IGameList> = ({ games, setSelectedGame, isAuthorized }) => {
+
   return (
     <Html
       transform
@@ -23,10 +22,7 @@ const GamesList: React.FC<IGameList> = ({ games, setSelectedGame }) => {
     >
       <div className="game-list">
         {games.map((game, i) => (
-          <div key={i} className="game-list-item" onClick={() => handleGameSelected(game)}>
-            <img src={`/images/${game.image}.webp`} className="game-list-img" alt="icon" />
-            <span>{game.title}</span>
-          </div>
+          <GameItem key={game._id} i={i} game={game} setSelectedGame={setSelectedGame} isAuthorized={isAuthorized} />
         ))}
       </div>
     </Html>

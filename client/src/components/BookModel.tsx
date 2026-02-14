@@ -2,13 +2,15 @@ import { Html, useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
 import GlowingGold from "../shaders/GlowingGold";
 import LoginForm from "./LoginForm";
 import RedAlert from "../shaders/RedAlert";
 import HealthyGreen from "../shaders/HealthyGreen";
+
+import { AuthorizationContext, type AuthorizationContextType } from "../context/AuthorizationContext";
 
 const BookModel = () => {
     const { scene } = useGLTF('/models/BookMain.glb');
@@ -26,6 +28,8 @@ const BookModel = () => {
     const angle = useRef(0);
     const [isExiting, setIsExiting] = useState<boolean>(false);
     const [zOffset, setZOffset] = useState<number>(0);
+
+    const { isAuthorized }: AuthorizationContextType = useContext(AuthorizationContext)
 
     useEffect(() => {
         if (gem && !initGemMaterial.current) {
@@ -74,7 +78,14 @@ const BookModel = () => {
     });
 
     useEffect(() => {
-        if (zOffset < -5) navigate("/game-keeper");
+        if (zOffset < -5) {
+            if (!isAuthorized) {
+                navigate("/game-keeper-guest");
+            }
+            else {
+                navigate("/game-keeper");
+            }
+        }
     }, [zOffset, navigate]);
 
     const handleLogin = () => {

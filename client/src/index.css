@@ -87,8 +87,10 @@ canvas {
 .game-list {
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   gap: 15px;
-  width: 400px
+  width: 400px;
+  height: 600px;
 }
 
 .game-list-item {
@@ -99,6 +101,7 @@ canvas {
   padding: 5px;
   border-radius: 4px ;
   cursor: pointer;
+  z-index: 10;
 }
 
 .game-list-item:hover {
@@ -108,14 +111,29 @@ canvas {
 
 .game-list-item span {
   color: white;
-  font-size: 20px;
-  font-weight: bold;
 }
 
 .game-list-img {
   width: 100px;
   height: 100px;
   border-radius: 4px;
+}
+
+.star {
+  font-size: 30px;
+  color: white;
+  opacity: 0.6;
+  transition: 0.2s ease;
+}
+
+.star:hover {
+  transform: scale(1.2);
+  opacity: 1;
+}
+
+.star.filled {
+  color: gold;
+  opacity: 1;
 }
 
 .sphere {
