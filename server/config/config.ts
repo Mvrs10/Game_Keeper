@@ -1,6 +1,10 @@
 import dotenv from "dotenv";
 
-dotenv.config({path: "./config/.env"});
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config({path: "./config/.env"});
+}
+
+//dotenv.config({path: "./config/.env"});
 
 interface IConfiguration {
     NODE_ENV: string,

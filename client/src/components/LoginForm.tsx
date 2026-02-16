@@ -67,6 +67,7 @@ const LoginForm: React.FC<ILoginForm> = ({ setIsFormOpen, setGlowGem, setIsFaile
                         regRes = await axios.post("/api/auth/login", { username, password });
                         if (regRes.status === 200) {
                             setIsAuthorized(true);
+                            setUsername(username);
                             handleFormClose();
                         }
                     }

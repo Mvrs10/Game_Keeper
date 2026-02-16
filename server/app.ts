@@ -11,7 +11,7 @@ import "./models/game.js";
 const app: Application = express();
 
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: process.env.NODE_ENV === "production" ? "vercel-url" : "http://localhost:5173",
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     // exposedHeaders: ['Authorization'],
     // allowedHeaders: ['Content-Type', 'Authorization'],
