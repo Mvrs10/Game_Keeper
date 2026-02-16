@@ -11,7 +11,7 @@ import "./models/game.js";
 const app: Application = express();
 
 app.use(cors({
-    origin: process.env.NODE_ENV === "production" ? "https://game-keeper.vercel.app/" : "http://localhost:5173",
+    origin: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     // exposedHeaders: ['Authorization'],
     // allowedHeaders: ['Content-Type', 'Authorization'],
