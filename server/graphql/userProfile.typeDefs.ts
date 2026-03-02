@@ -1,6 +1,6 @@
 const userProfileTypeDefs = `#graphql
     type UserProfile {
-        id: ID!
+        _id: ID!
         userId: ID!
         level: Int!
         avatar: String!
@@ -12,11 +12,18 @@ const userProfileTypeDefs = `#graphql
     }
 
     type Mutation {
-        id: ID!
-        userId: ID!
-        level: Int
-        avatar: String
-    } : UserProfile
+        createUserProfile(
+            userId: ID!
+            level: Int
+            avatar: String
+        ): UserProfile
+
+        updateUserProfile(
+            userId: ID!
+            level: Int
+            avatar: String
+        ): UserProfile
+    }
 `;
 
 export default userProfileTypeDefs;

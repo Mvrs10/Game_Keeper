@@ -2,9 +2,19 @@ import { NextFunction, Request, Response } from "express";
 import service from "../services/user.service.js";
 import AppError from "../errors/AppError.js";
 
+import { UserProfile } from "../models/userProfile.js";
+
 const createUser = async (req: Request, res: Response) => {
     try {
         const id = await service.createUser(req.body);
+
+        // Create UserProfile along with User for efficiency
+        await UserProfile.create({
+            userId: id,
+            level: 1,
+            avatar: "pawn"
+        });
+
         return res.status(201).location(`/api/users/${id}`).json({id, message: "User is successfully created" });
     } catch (err) {
         console.log(err);

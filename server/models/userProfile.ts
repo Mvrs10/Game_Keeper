@@ -15,5 +15,5 @@ const userProfileSchema = new Schema<IUserProfile> (
     {timestamps:true}
 )
 
-export const userProfile = model<IUserProfile>("UserProfile",userProfileSchema);
+export const UserProfile = model<IUserProfile>("UserProfile",userProfileSchema);
 
