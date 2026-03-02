@@ -18,7 +18,7 @@ import "./models/game.js";
 const app: Application = express();
 
 const corsOptions = {
-    origin: ["https://studio.apollographql.com", "http://localhost:5173"],
+    origin: ["https://studio.apollographql.com", "http://localhost:5173", "https://game-keeper.vercel.app/"],
     methods: ['GET', 'POST', 'PUT', 'DELETE','OPTIONS'],
     // exposedHeaders: ['Authorization'],
     // allowedHeaders: ['Content-Type', 'Authorization'],
