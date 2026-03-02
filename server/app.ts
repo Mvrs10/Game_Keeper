@@ -1,5 +1,7 @@
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@as-integrations/express4";
+import typeDefs from "./graphql/schemas/index.js";
+import resolvers from "./graphql/resolvers/index.js";
 
 import express, { Application } from "express";
 import cors from "cors";
@@ -16,68 +18,73 @@ import "./models/game.js";
 const app: Application = express();
 
 const corsOptions = {
-    origin: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    origin: ["https://studio.apollographql.com", "http://localhost:5173"],
+    methods: ['GET', 'POST', 'PUT', 'DELETE','OPTIONS'],
     // exposedHeaders: ['Authorization'],
     // allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'],
 }
 
-// 1. Define your GraphQL Schema (Types and Resolvers)
-const typeDefs = `#graphql
-  type Game {
-    id: ID
-    title: String
-  }
-  type Query {
-    games: [Game]
-  }
-`;
+// Global middlewares
+app.use(cors(corsOptions));
+app.use(express.json());
+app.use(cookieParser());
 
-const resolvers = {
-  Query: {
-    games: () => [{ id: "1", title: "Example Game" }],
-  },
-};
+// // 1. Define your GraphQL Schema (Types and Resolvers)
+// const typeDefs = `#graphql
+//   type Game {
+//     id: ID
+//     title: String
+//   }
+//   type Query {
+//     games: [Game]
+//   }
+// `;
+
+// const resolvers = {
+//   Query: {
+//     games: () => [{ id: "1", title: "Example Game" }],
+//   },
+// };
 
 const apolloServer = new ApolloServer({
   typeDefs,
   resolvers,
+  introspection: true,
 });
 
 await apolloServer.start();
 
-// Global middlewares
-app.use(cors(corsOptions));
-app.use(cookieParser());
-app.use(express.json());
-
 // GraphQL
-app.use('/graphql', expressMiddleware(apolloServer, {
+app.use('/graphql',
+  cors(corsOptions),
+  express.json(),
+  expressMiddleware(apolloServer, {
     context: async ({ req }) => {
-        try {
-            const token =
-                req.cookies.t ||
-                req.header("Authorization")?.replace("Bearer ", "").trim();
+      try {
+        const token =
+          req.cookies.t ||
+          req.header("Authorization")?.replace("Bearer ", "").trim();
 
-            if (!token) return { user: null };
+        if (!token) return { user: null };
 
-            const decoded = jwt.verify(
-                token,
-                config.JWT_SECRET
-            ) as JwtPayload & { _id: string; username: string };
+        const decoded = jwt.verify(
+          token,
+          config.JWT_SECRET
+        ) as JwtPayload & { _id: string; username: string };
 
-            return {
-                user: {
-                    _id: decoded._id,
-                    username: decoded.username,
-                },
-            };
-        } catch {
-            return { user: null };
-        }
+        return {
+          user: {
+            _id: decoded._id,
+            username: decoded.username,
+          },
+        };
+      } catch {
+        return { user: null };
+      }
     },
-}));
+  }));
 
 // REST
 app.use("/api/users/", userRoutes);
