@@ -6,6 +6,9 @@ import { useState, useEffect, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+import { gql } from "@apollo/client";
+import { useQuery } from '@apollo/client/react';
+
 import GamesList from "./GamesList";
 import Sphere from "./Sphere";
 import SnackBar from "./SnackBar";
@@ -13,8 +16,8 @@ import NavButton from "./NavButton";
 import UserLabel from "./UserLabel";
 
 import type IGame from "../types/Game";
+import type IUserProfile from "../types/UserProfile";
 import { AuthorizationContext, type AuthorizationContextType } from "../context/AuthorizationContext";
-
 
 const initGameState: IGame = {
     _id: "undefined",
@@ -27,6 +30,17 @@ const initGameState: IGame = {
     description: "N/A",
     image: "0",
 }
+
+const GET_USER_PROFILE = gql`
+  query GetUserProfile($userId: ID!) {
+    userProfile(userId: $userId) {
+      _id
+      userId
+      level
+      avatar
+    }
+  }
+`;
 
 const OpenBookModel = () => {
     const { scene } = useGLTF('/models/BookOpen.glb');
@@ -101,10 +115,16 @@ const OpenBookModel = () => {
         getAllGames();        
     }, []);
 
+    /* GraphQL - Lab2 */
+    const { data } = useQuery<{ userProfile: IUserProfile }>(GET_USER_PROFILE, {
+        variables: { userId },
+        skip: !userId, 
+    });
+
     return (
         <group ref={posRef}>
             <primitive object={scene} />
-            <UserLabel username={userName}/>
+            <UserLabel username={userName} level={data?.userProfile?.level ?? 1} avatar={data?.userProfile?.avatar ?? "pawn"}/>
             {isAuthorized ? <NavButton getAllGames={getAllGames} getCollection={getCollection} setIsCollectionOpen={setIsCollectionOpen}/> : null}
             <GamesList games={games} setSelectedGame={setSelectedGame} isAuthorized={isAuthorized} userId={userId} favoriteGames={favoriteGames} setFavoriteGames={setFavoriteGames}/>
             <Sphere game={selectedGame} />
