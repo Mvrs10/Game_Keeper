@@ -1,12 +1,13 @@
 import { Html } from "@react-three/drei";
 
 interface IUserLabel {
-    username: string;
-    level: number;
-    avatar: string;
+    username: string,
+    level: number,
+    avatar: string,
+    onClick: () => void
 }
 
-const UserLabel: React.FC<IUserLabel> = ({ username, level, avatar }) => {
+const UserLabel: React.FC<IUserLabel> = ({ username, level, avatar, onClick }) => {
     // Logic fix: If username exists and isn't empty, user is logged in
     const isLoggedIn = username && username.trim() !== "";
 
@@ -17,7 +18,7 @@ const UserLabel: React.FC<IUserLabel> = ({ username, level, avatar }) => {
             distanceFactor={2.5}
             rotation-x={-Math.PI / 2}
         >
-            <div className={`user-label-container ${isLoggedIn ? 'authenticated' : 'guest'}`}>
+            <div className={`user-label-container ${isLoggedIn ? 'authenticated' : 'guest'}`} onClick={onClick}>
                 <div className="avatar-badge">
                     <img src={`/images/${avatar || 'pawn'}.webp`} className="user-profile-img" alt="avatar" />
                     {isLoggedIn && <span className="level-bubble">{level}</span>}

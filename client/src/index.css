@@ -27,6 +27,7 @@ canvas {
   border: 2px solid #ffcc00;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 12px;
   font-family: sans-serif;
   font-weight: bold;
   pointer-events: auto; /* Ensures they are clickable inside the 3D scene */
@@ -45,7 +46,7 @@ canvas {
   flex-direction: column;
   gap: 8px;
 
-  width: 180px;
+  width: 150px;
   padding: 14px 16px;
 
   background: rgba(25, 18, 10, 0.95);
@@ -61,7 +62,7 @@ canvas {
 .login-form-control{
   display: flex;
   flex-direction: row;
-  gap: 80px;
+  gap: 55px;
   align-items: center;
 }
 
@@ -88,6 +89,43 @@ canvas {
 .login-form input:focus {
   border-color: #ffd54f;
   box-shadow: 0 0 6px rgba(255, 213, 79, 0.5);
+}
+
+.btn-close-form {
+    padding: 2px 6px !important;
+    font-size: 10px !important;
+    background: #4a1a1a !important;
+    border-color: #8b2b2b !important;
+    cursor: pointer;
+}
+
+.btn-close-form:hover {
+    background: #8b2b2b !important;
+}
+
+.login-form-select {
+    height: 30px; /* Slightly taller than the input for better padding */
+    padding: 4px 10px;
+
+    background: #120c06;
+    color: #f5e6b8;
+
+    border: 1px solid #8b6a2b;
+    border-radius: 6px;
+    outline: none;
+    
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.login-form-select:focus {
+    border-color: #ffd54f;
+}
+
+/* Style the dropdown options for modern browsers */
+.login-form-select option {
+    background: #1a140d;
+    color: #f5e6b8;
 }
 
 /* Game List */
@@ -268,6 +306,22 @@ canvas {
     white-space: nowrap;
     transition: all 0.3s ease;
     user-select: none;
+}
+
+.user-label-container {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.user-label-container:hover {
+    background: rgba(40, 40, 40, 0.8);
+    transform: scale(1.02);
+    box-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
+    border-color: rgba(0, 210, 255, 0.6);
+}
+
+.user-label-container:active {
+    transform: scale(0.95);
 }
 
 /* Specific styling for Guests */

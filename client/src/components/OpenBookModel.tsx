@@ -14,6 +14,7 @@ import Sphere from "./Sphere";
 import SnackBar from "./SnackBar";
 import NavButton from "./NavButton";
 import UserLabel from "./UserLabel";
+import EditProfileForm from "./EditProfileForm";
 
 import type IGame from "../types/Game";
 import type IUserProfile from "../types/UserProfile";
@@ -121,10 +122,19 @@ const OpenBookModel = () => {
         skip: !userId, 
     });
 
+    const [isEditProfile, setIsEditProfile] = useState<boolean>(false);
+
     return (
         <group ref={posRef}>
             <primitive object={scene} />
-            <UserLabel username={userName} level={data?.userProfile?.level ?? 1} avatar={data?.userProfile?.avatar ?? "pawn"}/>
+            <UserLabel username={userName} level={data?.userProfile?.level ?? 1} avatar={data?.userProfile?.avatar ?? "pawn"} onClick={() => setIsEditProfile(true)} />
+            {isEditProfile && (
+                <EditProfileForm
+                    userId={userId}
+                    currentProfile={data?.userProfile}
+                    onClose={() => setIsEditProfile(false)}
+                />
+        )}
             {isAuthorized ? <NavButton getAllGames={getAllGames} getCollection={getCollection} setIsCollectionOpen={setIsCollectionOpen}/> : null}
             <GamesList games={games} setSelectedGame={setSelectedGame} isAuthorized={isAuthorized} userId={userId} favoriteGames={favoriteGames} setFavoriteGames={setFavoriteGames}/>
             <Sphere game={selectedGame} />
